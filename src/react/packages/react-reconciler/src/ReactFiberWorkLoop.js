@@ -800,7 +800,7 @@ export function scheduleUpdateOnFiber(
         );
       }
     }
-
+    // 注册任务调度
     ensureRootIsScheduled(root);
     if (
       lane === SyncLane &&

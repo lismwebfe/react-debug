@@ -125,6 +125,7 @@ function advanceTimers(currentTime: number) {
 }
 
 function handleTimeout(currentTime: number) {
+  debugger
   isHostTimeoutScheduled = false;
   advanceTimers(currentTime);
 
@@ -142,6 +143,7 @@ function handleTimeout(currentTime: number) {
 }
 
 function flushWork(initialTime: number) {
+  debugger
   if (enableProfiling) {
     markSchedulerUnsuspended(initialTime);
   }
@@ -186,6 +188,7 @@ function flushWork(initialTime: number) {
 }
 
 function workLoop(initialTime: number) {
+  debugger
   let currentTime = initialTime;
   advanceTimers(currentTime);
   currentTask = peek(taskQueue);
@@ -319,6 +322,15 @@ function unstable_wrapCallback<T: (...Array<mixed>) => mixed>(callback: T): T {
   };
 }
 
+/**
+ * 创建任务，判断任务是否延时
+ * 1、是任务延时就加入到timerQueue，此时如果任务队列为空，并且当前创建的任务就是第一个延时任务，则现在就开启调度
+ * 2、任务没有延时，检查是否已经调度了一个宿主环境的回调函数和是否正在工作，如果都没有，就请求调度（这里会开启宏任务调度了）
+ * @param priorityLevel
+ * @param callback ---> processRootScheduleInMicrotask:src/react/packages/react-reconciler/src/ReactFiberRootScheduler.js:206
+ * @param options
+ * @return {Task}
+ */
 function unstable_scheduleCallback(
   priorityLevel: PriorityLevel,
   callback: Callback,
@@ -378,12 +390,15 @@ function unstable_scheduleCallback(
     newTask.isQueued = false;
   }
 
+  // 如果任务延时，将任务放到timerQueue，否则将任务放到taskQueue
   if (startTime > currentTime) {
     // This is a delayed task.
     newTask.sortIndex = startTime;
     push(timerQueue, newTask);
+    // 任务空了，并且当前创建的任务就是第一个延时任务，则现在就开启调度
     if (peek(taskQueue) === null && newTask === peek(timerQueue)) {
       // All tasks are delayed, and this is the task with the earliest delay.
+      // 检查是否已经安排了延时任务调度，如果已经安排那么先取消延时任务调度然后重新开启
       if (isHostTimeoutScheduled) {
         // Cancel an existing timeout.
         cancelHostTimeout();
@@ -391,6 +406,7 @@ function unstable_scheduleCallback(
         isHostTimeoutScheduled = true;
       }
       // Schedule a timeout.
+      // 请求宿主环境延时任务调度
       requestHostTimeout(handleTimeout, startTime - currentTime);
     }
   } else {
@@ -402,6 +418,7 @@ function unstable_scheduleCallback(
     }
     // Schedule a host callback, if needed. If we're already performing work,
     // wait until the next time we yield.
+    // 检查是否已经调度了一个宿主环境的回调函数和是否正在工作，如果都没有，就请求调度
     if (!isHostCallbackScheduled && !isPerformingWork) {
       isHostCallbackScheduled = true;
       requestHostCallback();
@@ -487,6 +504,7 @@ function forceFrameRate(fps: number) {
 }
 
 const performWorkUntilDeadline = () => {
+  debugger
   if (isMessageLoopRunning) {
     const currentTime = getCurrentTime();
     // Keep track of the start time so we can measure how long the main thread
@@ -546,7 +564,7 @@ if (typeof localSetImmediate === 'function') {
     localSetTimeout(performWorkUntilDeadline, 0);
   };
 }
-
+// 请求在react宿主环境（可以潜意识的理解为宏任务，因为这里使用的是node环境或者ie（setImmediate）、MessageChannel、setTimeout）调度，宏任务优先会将主线程出让给UI线程，让UI响应优先
 function requestHostCallback() {
   if (!isMessageLoopRunning) {
     isMessageLoopRunning = true;

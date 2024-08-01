@@ -82,8 +82,9 @@ let mightHavePendingSyncWork: boolean = false;
 let isFlushingWork: boolean = false;
 
 let currentEventTransitionLane: Lane = NoLane;
-
+// 注册任务调度
 export function ensureRootIsScheduled(root: FiberRoot): void {
+  debugger
   // This function is called whenever a root receives an update. It does two
   // things 1) it ensures the root is in the root schedule, and 2) it ensures
   // there's a pending microtask to process the root schedule.
@@ -117,8 +118,12 @@ export function ensureRootIsScheduled(root: FiberRoot): void {
       scheduleImmediateTask(processRootScheduleInMicrotask);
     }
   } else {
+    // 检查是否安排了微任务调度
     if (!didScheduleMicrotask) {
+      // 开启微任务调度
       didScheduleMicrotask = true;
+      debugger
+      // 注册微任务调度
       scheduleImmediateTask(processRootScheduleInMicrotask);
     }
   }
@@ -202,12 +207,14 @@ function processRootScheduleInMicrotask() {
   debugger
   // This function is always called inside a microtask. It should never be
   // called synchronously.
+  // 重置微任务调度标识，没有安排微任务调度
   didScheduleMicrotask = false;
   if (__DEV__) {
     didScheduleMicrotask_act = false;
   }
 
   // We'll recompute this as we iterate through all the roots and schedule them.
+  // 重置可能正在处理的同步工作
   mightHavePendingSyncWork = false;
 
   const currentTime = now();
@@ -427,6 +434,7 @@ function cancelCallback(callbackNode: mixed) {
 }
 
 function scheduleImmediateTask(cb: () => mixed) {
+  debugger
   if (__DEV__ && ReactSharedInternals.actQueue !== null) {
     // Special case: Inside an `act` scope, we push microtasks to the fake `act`
     // callback queue. This is because we currently support calling `act`
@@ -434,6 +442,7 @@ function scheduleImmediateTask(cb: () => mixed) {
     // that you always await the result so that the microtasks have a chance to
     // run. But it hasn't happened yet.
     ReactSharedInternals.actQueue.push(() => {
+      debugger
       cb();
       return null;
     });
@@ -441,8 +450,10 @@ function scheduleImmediateTask(cb: () => mixed) {
 
   // TODO: Can we land supportsMicrotasks? Which environments don't support it?
   // Alternatively, can we move this check to the host config?
+  // 检查环境是否支持微任务
   if (supportsMicrotasks) {
     scheduleMicrotask(() => {
+      debugger
       // In Safari, appending an iframe forces microtasks to run.
       // https://github.com/facebook/react/issues/22459
       // We don't support running callbacks in the middle of render
