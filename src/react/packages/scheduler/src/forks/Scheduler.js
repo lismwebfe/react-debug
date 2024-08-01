@@ -141,7 +141,7 @@ function handleTimeout(currentTime: number) {
     }
   }
 }
-
+// 主要工作由workLoop来完成，遍历任务队列和调用每个任务的回调函数
 function flushWork(initialTime: number) {
   debugger
   if (enableProfiling) {
@@ -150,12 +150,13 @@ function flushWork(initialTime: number) {
 
   // We'll need a host callback the next time work is scheduled.
   isHostCallbackScheduled = false;
+  // 如果正在调度延时任务就先取消（就是延时任务在延时任务队列）
   if (isHostTimeoutScheduled) {
     // We scheduled a timeout but it's no longer needed. Cancel it.
     isHostTimeoutScheduled = false;
     cancelHostTimeout();
   }
-
+  // 有正在进行的工作
   isPerformingWork = true;
   const previousPriorityLevel = currentPriorityLevel;
   try {
@@ -187,9 +188,17 @@ function flushWork(initialTime: number) {
   }
 }
 
+/**
+ * 1、将timerQueue任务push到taskQueue中；
+ * 2、遍历任务队列（taskQueue），执行任务队列中的回调函数
+ * 3、如果还有延时任务则继续请求启动延时任务
+ * @param initialTime
+ * @return {boolean}
+ */
 function workLoop(initialTime: number) {
   debugger
   let currentTime = initialTime;
+  // 延时任务提前，将延时任务队列的任务push到taskQueue
   advanceTimers(currentTime);
   currentTask = peek(taskQueue);
   while (
@@ -201,6 +210,9 @@ function workLoop(initialTime: number) {
       break;
     }
     // $FlowFixMe[incompatible-use] found when upgrading Flow
+    // 这里的callback
+    // ---> processRootScheduleInMicrotask：src/react/packages/react-reconciler/src/ReactFiberRootScheduler.js:206
+    // ---> performConcurrentWorkOnRoot:src/react/packages/react-reconciler/src/ReactFiberWorkLoop.js:850 ---> 有可能会返回一个使用便函数特性的performConcurrentWorkOnRoot函数，root参数会在返回时处理，所以在这里只需要穿一个时间
     const callback = currentTask.callback;
     if (typeof callback === 'function') {
       // $FlowFixMe[incompatible-use] found when upgrading Flow
@@ -327,7 +339,9 @@ function unstable_wrapCallback<T: (...Array<mixed>) => mixed>(callback: T): T {
  * 1、是任务延时就加入到timerQueue，此时如果任务队列为空，并且当前创建的任务就是第一个延时任务，则现在就开启调度
  * 2、任务没有延时，检查是否已经调度了一个宿主环境的回调函数和是否正在工作，如果都没有，就请求调度（这里会开启宏任务调度了）
  * @param priorityLevel
- * @param callback ---> processRootScheduleInMicrotask:src/react/packages/react-reconciler/src/ReactFiberRootScheduler.js:206
+ * @param callback  视情况而定，不同的任务调度回调函数不一样
+ *  ---> processRootScheduleInMicrotask:src/react/packages/react-reconciler/src/ReactFiberRootScheduler.js:206
+ *  ---> performConcurrentWorkOnRoot:src/react/packages/react-reconciler/src/ReactFiberWorkLoop.js:850
  * @param options
  * @return {Task}
  */
@@ -524,6 +538,7 @@ const performWorkUntilDeadline = () => {
       if (hasMoreWork) {
         // If there's more work, schedule the next message event at the end
         // of the preceding one.
+        // 如果有更多的任务就继续使用宏任务调度
         schedulePerformWorkUntilDeadline();
       } else {
         isMessageLoopRunning = false;

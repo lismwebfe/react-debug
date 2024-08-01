@@ -269,7 +269,7 @@ function processRootScheduleInMicrotask() {
   // to come at the end, because it does actual rendering work that might throw.
   flushSyncWorkOnAllRoots();
 }
-
+// 在微任务调度期间为root安排任务调度
 function scheduleTaskForRootDuringMicrotask(
   root: FiberRoot,
   currentTime: number,
