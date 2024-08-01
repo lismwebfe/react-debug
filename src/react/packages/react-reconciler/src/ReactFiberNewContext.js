@@ -671,6 +671,7 @@ export function prepareToReadContext(
   workInProgress: Fiber,
   renderLanes: Lanes,
 ): void {
+  debugger
   currentlyRenderingFiber = workInProgress;
   lastContextDependency = null;
   lastFullyObservedContext = null;
