@@ -343,6 +343,7 @@ export function reconcileChildren(
   nextChildren: any,
   renderLanes: Lanes,
 ) {
+  debugger
   if (current === null) {
     // If this is a fresh new component that hasn't been rendered yet, we
     // won't update its child set by applying minimal side-effects. Instead,
@@ -1106,6 +1107,7 @@ function updateFunctionComponent(
   nextProps: any,
   renderLanes: Lanes,
 ) {
+  debugger
   if (__DEV__) {
     if (
       Component.prototype &&
@@ -1463,6 +1465,7 @@ function finishClassComponent(
 }
 
 function pushHostRootContext(workInProgress: Fiber) {
+  debugger
   const root = (workInProgress.stateNode: FiberRoot);
   if (root.pendingContext) {
     pushTopLevelContextObject(
@@ -1482,6 +1485,7 @@ function updateHostRoot(
   workInProgress: Fiber,
   renderLanes: Lanes,
 ) {
+  debugger
   pushHostRootContext(workInProgress);
 
   if (current === null) {
@@ -3622,6 +3626,7 @@ function checkScheduledUpdateOrContext(
   current: Fiber,
   renderLanes: Lanes,
 ): boolean {
+  debugger
   // Before performing an early bailout, we must check if there are pending
   // updates or context.
   const updateLanes = current.lanes;

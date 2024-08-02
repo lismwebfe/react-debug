@@ -210,6 +210,7 @@ function getOwnerDocumentFromRootContainer(
 export function getRootHostContext(
   rootContainerInstance: Container,
 ): HostContext {
+  debugger
   let type;
   let context: HostContextProd;
   const nodeType = rootContainerInstance.nodeType;

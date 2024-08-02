@@ -79,6 +79,7 @@ export function getHostTransitionProvider(): Fiber | null {
 }
 
 function pushHostContainer(fiber: Fiber, nextRootInstance: Container): void {
+  debugger
   // Push current root instance onto the stack;
   // This allows us to reset root when portals are popped.
   push(rootInstanceStackCursor, nextRootInstance, fiber);

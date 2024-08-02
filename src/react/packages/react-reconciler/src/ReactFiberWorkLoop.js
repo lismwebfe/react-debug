@@ -895,6 +895,8 @@ export function performConcurrentWorkOnRoot(
   // TODO: We only check `didTimeout` defensively, to account for a Scheduler
   // bug we're still investigating. Once the bug in Scheduler is fixed,
   // we can remove this, since we track expiration ourselves.
+  // !didTimeout 表示任务的 过期时间 > 当前的执行时间，而且此时是有执行的空闲时间的
+  // 如果不是同步任务并且任务没有过期还有空闲时间就可以使用renderRootConcurrent否则使用renderRootSync
   const shouldTimeSlice =
     !includesBlockingLane(root, lanes) &&
     !includesExpiredLane(root, lanes) &&
@@ -1867,6 +1869,7 @@ export function shouldRemainOnPreviousScreen(): boolean {
 }
 
 function pushDispatcher(container: any) {
+  debugger
   const prevDispatcher = ReactSharedInternals.H;
   ReactSharedInternals.H = ContextOnlyDispatcher;
   if (prevDispatcher === null) {
@@ -1884,6 +1887,7 @@ function popDispatcher(prevDispatcher: any) {
 }
 
 function pushAsyncDispatcher() {
+  debugger
   if (enableCache || __DEV__ || !disableStringRefs) {
     const prevAsyncDispatcher = ReactSharedInternals.A;
     ReactSharedInternals.A = DefaultAsyncDispatcher;

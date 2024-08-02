@@ -211,7 +211,6 @@ function workLoop(initialTime: number) {
     }
     // $FlowFixMe[incompatible-use] found when upgrading Flow
     // 这里的callback
-    // ---> processRootScheduleInMicrotask：src/react/packages/react-reconciler/src/ReactFiberRootScheduler.js:206
     // ---> performConcurrentWorkOnRoot:src/react/packages/react-reconciler/src/ReactFiberWorkLoop.js:850 ---> 有可能会返回一个使用便函数特性的performConcurrentWorkOnRoot函数，root参数会在返回时处理，所以在这里只需要穿一个时间
     const callback = currentTask.callback;
     if (typeof callback === 'function') {
@@ -339,8 +338,7 @@ function unstable_wrapCallback<T: (...Array<mixed>) => mixed>(callback: T): T {
  * 1、是任务延时就加入到timerQueue，此时如果任务队列为空，并且当前创建的任务就是第一个延时任务，则现在就开启调度
  * 2、任务没有延时，检查是否已经调度了一个宿主环境的回调函数和是否正在工作，如果都没有，就请求调度（这里会开启宏任务调度了）
  * @param priorityLevel
- * @param callback  视情况而定，不同的任务调度回调函数不一样
- *  ---> processRootScheduleInMicrotask:src/react/packages/react-reconciler/src/ReactFiberRootScheduler.js:206
+ * @param callback
  *  ---> performConcurrentWorkOnRoot:src/react/packages/react-reconciler/src/ReactFiberWorkLoop.js:850
  * @param options
  * @return {Task}

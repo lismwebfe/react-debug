@@ -287,6 +287,7 @@ function scheduleTaskForRootDuringMicrotask(
 
   // Check if any lanes are being starved by other work. If so, mark them as
   // expired so we know to work on those next.
+  // 不同优先级的任务在加入任务队列时都会带有一个过期时间，一但任务到期就会把这个任务的优先级提到和syncLane一样同步执行
   markStarvedLanesAsExpired(root, currentTime);
 
   // Determine the next lanes to work on, and their priority.

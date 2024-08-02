@@ -644,6 +644,7 @@ function propagateParentContextChanges(
 export function checkIfContextChanged(
   currentDependencies: Dependencies,
 ): boolean {
+  debugger
   if (!enableLazyContextPropagation) {
     return false;
   }

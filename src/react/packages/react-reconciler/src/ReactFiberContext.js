@@ -150,6 +150,7 @@ function pushTopLevelContextObject(
   context: Object,
   didChange: boolean,
 ): void {
+  debugger
   if (disableLegacyContext) {
     return;
   } else {
