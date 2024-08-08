@@ -129,6 +129,7 @@ export function ensureRootIsScheduled(root: FiberRoot): void {
   }
 
   if (!enableDeferRootSchedulingToMicrotask) {
+    debugger
     // While this flag is disabled, we schedule the render task immediately
     // instead of waiting a microtask.
     // TODO: We need to land enableDeferRootSchedulingToMicrotask ASAP to

@@ -2044,6 +2044,7 @@ function commitDeletionEffectsOnFiber(
   nearestMountedAncestor: Fiber,
   deletedFiber: Fiber,
 ) {
+  debugger
   onCommitUnmount(deletedFiber);
 
   // The cases in this outer switch modify the stack before they traverse

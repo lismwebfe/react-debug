@@ -389,7 +389,7 @@ function unstable_scheduleCallback(
   }
 
   var expirationTime = startTime + timeout;
-
+debugger
   var newTask: Task = {
     id: taskIdCounter++,
     callback,

@@ -631,6 +631,7 @@ function finishRenderingHooks<Props, SecondArg>(
   workInProgress: Fiber,
   Component: (p: Props, arg: SecondArg) => any,
 ): void {
+  debugger
   if (__DEV__) {
     workInProgress._debugHookTypes = hookTypesDev;
   }

@@ -3094,6 +3094,7 @@ function commitRootImpl(
 
   // Always call this before exiting `commitRoot`, to ensure that any
   // additional work on this root is scheduled.
+  debugger
   ensureRootIsScheduled(root);
 
   if (recoverableErrors !== null) {
