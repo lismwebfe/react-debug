@@ -724,8 +724,7 @@ export function scheduleUpdateOnFiber(
     // Suspended commit phase
     root.cancelPendingCommit !== null
   ) {
-    // The incoming update might unblock the current render. Interrupt the
-    // current attempt and restart from the top.
+    // The incoming update might unblock the current render. Interrupt the current attempt and restart from the top.
     prepareFreshStack(root, NoLanes);
     markRootSuspended(
       root,
@@ -3245,7 +3244,9 @@ function releaseRootPooledCache(root: FiberRoot, remainingLanes: Lanes) {
     }
   }
 }
-
+// 调用flushPassiveEffectsImpl实现函数，做两件事
+// 1、销毁上一次渲染的useEffect销毁函数
+// 2、执行本次useEffect回调函数，需要一直看到commitHookEffectListMount这个函数
 export function flushPassiveEffects(): boolean {
   // Returns whether passive effects were flushed.
   // TODO: Combine this check with the one in flushPassiveEFfectsImpl. We should
@@ -3297,7 +3298,8 @@ export function enqueuePendingPassiveProfilerEffect(fiber: Fiber): void {
     }
   }
 }
-
+// 1、销毁上一次渲染的useEffect销毁函数
+// 2、执行本次useEffect回调函数，需要一直看到commitHookEffectListMount这个函数
 function flushPassiveEffectsImpl() {
   if (rootWithPendingPassiveEffects === null) {
     return false;
