@@ -172,6 +172,7 @@ function FiberNode(
   this.updateQueue = null;
   // 上次更新后的state（上一次渲染完成后的state对象）
   this.memoizedState = null;
+  // 用于跟踪 Fiber 节点所依赖的上下文（Context）、refs 或者其他可能导致重新渲染的因素。通过这个属性，React 可以更准确地判断哪些 Fiber 需要重新渲染，从而避免不必要的重新渲染，提高性能。
   this.dependencies = null;
 
   this.mode = mode;
