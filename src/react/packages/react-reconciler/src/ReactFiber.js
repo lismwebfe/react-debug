@@ -141,37 +141,51 @@ function FiberNode(
   mode: TypeOfMode,
 ) {
   // Instance
+  // Fiber对应的组件类型
   this.tag = tag;
   this.key = key;
   this.elementType = null;
+  // 组件类型，函数组件（FunctionComponent）值函数本身，classComponent指class，HostComponent指向dom节点的tagName，具体应用可以查看beginWork函数中根据fiber.tag调用的updateXXXComponent
   this.type = null;
+  // fiber对应的真实dom节点
   this.stateNode = null;
 
   // Fiber
+  // fiber架构双向链表结构
+  // 指向父级fiber
   this.return = null;
+  // 指向第一个子fiber节点
   this.child = null;
+  // 指向下一个兄弟fiber节点
   this.sibling = null;
   this.index = 0;
 
   this.ref = null;
   this.refCleanup = null;
 
+  // unit work相关的，记录本次更新和上一次更新的状态改变结果相关
+  // 本次更新的props（当前处理过程中组件的props对象）
   this.pendingProps = pendingProps;
+  // 上次更新后的props（上一次渲染完成后的props对象）
   this.memoizedProps = null;
+  // fiber对应组件产生的更新队列
   this.updateQueue = null;
+  // 上次更新后的state（上一次渲染完成后的state对象）
   this.memoizedState = null;
   this.dependencies = null;
 
   this.mode = mode;
 
   // Effects
+  // effect副作用相关的，具体可以查看flushPassiveEffects函数如何去使用
   this.flags = NoFlags;
   this.subtreeFlags = NoFlags;
   this.deletions = null;
-
+  // 优先级调度相关
   this.lanes = NoLanes;
   this.childLanes = NoLanes;
 
+  // fiber节点对应双缓存fiber节点（workInProgress）
   this.alternate = null;
 
   if (enableProfilerTimer) {

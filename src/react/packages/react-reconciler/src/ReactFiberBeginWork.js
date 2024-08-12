@@ -1262,6 +1262,7 @@ function updateClassComponent(
   nextProps: any,
   renderLanes: Lanes,
 ) {
+  debugger
   if (__DEV__) {
     // This is used by DevTools to force a boundary to error.
     switch (shouldError(workInProgress)) {
@@ -1310,6 +1311,7 @@ function updateClassComponent(
   // We will invalidate the child context in finishClassComponent() right after rendering.
   let hasContext;
   if (isLegacyContextProvider(Component)) {
+    debugger
     hasContext = true;
     pushLegacyContextProvider(workInProgress);
   } else {
