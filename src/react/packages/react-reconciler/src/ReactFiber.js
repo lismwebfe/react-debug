@@ -158,6 +158,7 @@ function FiberNode(
   this.child = null;
   // 指向下一个兄弟fiber节点
   this.sibling = null;
+  // 用于reconcileChildren时比较索引为止，主要用于比较children为数组时
   this.index = 0;
 
   this.ref = null;
